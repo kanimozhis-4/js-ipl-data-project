@@ -1,7 +1,7 @@
 import fs from 'fs';
 import {matches} from"./1-matches-per-year.js";
 import { deliveries } from './1-matches-per-year.js';
-export function playerOfMatchPerSeason(matchesFilePath,deliveriesFilePath){ 
+export function playerOfMatchPerSeason(){ 
     let topPlayers={}; 
     let playerOfMatchCount={};
     const playerOfMatch=matches.reduce((acc,match)=>{ 

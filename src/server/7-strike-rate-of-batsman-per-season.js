@@ -40,7 +40,7 @@ export function strikeRateOfBatsmanPerSeason(){
    
 
 }  
-strikeRateOfBatsmanPerSeason('../data/matches.json','../data/deliveries.json');
+strikeRateOfBatsmanPerSeason();
 
 
 
