@@ -1,13 +1,17 @@
 import fs from 'fs';
 import {matches} from"./1-matches-per-year.js";
 import { deliveries } from './1-matches-per-year.js';
-export function extraRunPerTeam(year){  
+export function getId(matches,year){
     const matchIdArray=matches.reduce((acc,match)=>{  
         if(match.season==year){ 
             acc.push(match.id)
         } 
         return acc;
-    },[])
+    },[]) 
+    return matchIdArray;
+}
+export function extraRunPerTeam(year){  
+    const matchIdArray=getId(matches,year)
     const extraRun = deliveries.reduce((acc, deliver) => {  
         let run=Number(deliver.extra_runs)
         
