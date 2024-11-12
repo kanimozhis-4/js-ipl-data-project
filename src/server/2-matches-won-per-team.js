@@ -20,10 +20,12 @@ export function matchesWonPerTeam(){
             acc[match.season][match.winner]=1;
         } 
         return acc; 
-      }, {}); 
-      fs.writeFileSync('../public/output/matchesWonPerTeam.json', JSON.stringify(countByYear, null, 2), 'utf-8');
-      
+      }, {});  
+      return countByYear;
+     
   
 
 } 
-matchesWonPerTeam();
+let countByYear= matchesWonPerTeam();
+fs.writeFileSync('../public/output/matchesWonPerTeam.json', JSON.stringify(countByYear, null, 2), 'utf-8');
+      

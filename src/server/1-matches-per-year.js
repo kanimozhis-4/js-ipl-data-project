@@ -13,10 +13,12 @@ export function matchesPerYear(){
             acc[match.season]=1;
         } 
         return acc; 
-      }, {}); 
-      fs.writeFileSync('../public/output/matchesPerYear.json', JSON.stringify(countByYear, null, 2), 'utf-8');
-      
+      }, {});  
+      return countByYear;
+     
   
 
 }  
-matchesPerYear();
+const countByYear= matchesPerYear();
+fs.writeFileSync('../public/output/matchesPerYear.json', JSON.stringify(countByYear, null, 2), 'utf-8');
+      

@@ -33,10 +33,11 @@ export function bestEconomyBowlerSuperOver(){
      
       let bestBowler=getBowlerEconomy(totalRun);
      
-     
-      fs.writeFileSync('../public/output/bestEconomyBowlerSuperOver.json', JSON.stringify(bestBowler, null, 2), 'utf-8');
+      return bestBowler;
       
   
 
 } 
-bestEconomyBowlerSuperOver();
+let bestBowler=bestEconomyBowlerSuperOver();
+fs.writeFileSync('../public/output/bestEconomyBowlerSuperOver.json', JSON.stringify(bestBowler, null, 2), 'utf-8');
+      

@@ -12,10 +12,11 @@ export function getId(matches,year){
 }
 export function extraRunPerTeam(year){  
     const matchIdArray=getId(matches,year)
+    const matchIdSet=new Set(matchIdArray)
     const extraRun = deliveries.reduce((acc, deliver) => {  
         let run=Number(deliver.extra_runs)
         
-       if(matchIdArray.includes(deliver.match_id)){
+       if(matchIdSet.has(deliver.match_id)){
             if((deliver.bowling_team in acc) ){ 
                
                 acc[deliver.bowling_team] +=Number(deliver.extra_runs);
@@ -26,11 +27,13 @@ export function extraRunPerTeam(year){
             } 
        }
         return acc; 
-      }, {});  
+      }, {}); 
+    return extraRun;  
      
-      fs.writeFileSync('../public/output/extraRunPerTeam.json', JSON.stringify(extraRun, null, 2), 'utf-8');
-      
-  
+     
 
 } 
-extraRunPerTeam(2016);
+let extraRun=extraRunPerTeam(2016);
+fs.writeFileSync('../public/output/extraRunPerTeam.json', JSON.stringify(extraRun, null, 2), 'utf-8');
+      
+  

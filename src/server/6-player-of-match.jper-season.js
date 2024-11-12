@@ -28,10 +28,11 @@ export function playerOfMatchPerSeason(){
         } 
         return acc
 
-    },{})   
+    },{})    
+    return topPlayers;
    
-    fs.writeFileSync('../public/output/playerOfMatchPerSeason.json', JSON.stringify(topPlayers, null, 2), 'utf-8');
-
+  
 
 }  
-playerOfMatchPerSeason();
+let topPlayers=playerOfMatchPerSeason();
+fs.writeFileSync('../public/output/playerOfMatchPerSeason.json', JSON.stringify(topPlayers, null, 2), 'utf-8');

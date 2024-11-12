@@ -25,8 +25,10 @@ export function highestDismissedPlayer(){
         } 
         return acc;
     }, {});  
-    fs.writeFileSync('../public/output/highestDismissedPlayer.json', JSON.stringify(result, null, 2), 'utf-8'); 
-
+    return result; 
+   
 
 } 
-highestDismissedPlayer();
+let result=highestDismissedPlayer();
+fs.writeFileSync('../public/output/highestDismissedPlayer.json', JSON.stringify(result, null, 2), 'utf-8'); 
+

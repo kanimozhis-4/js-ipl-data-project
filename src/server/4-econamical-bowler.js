@@ -2,20 +2,21 @@ import fs from 'fs';
 import {matches} from"./1-matches-per-year.js";
 import { deliveries } from './1-matches-per-year.js';
 import {getId} from './3-extra-run-per-team.js';
-export function getTopBowlers(totalRun,n){ 
-    totalRun = Object.entries(totalRun);
-    totalRun.sort((a, b) => a[1] - b[1]);
-    totalRun = totalRun.slice(0, n);
-    totalRun = Object.fromEntries(totalRun); 
-    return totalRun
+export function getTopBowlers(bowlerEconomy,n){ 
+    bowlerEconomy = Object.entries(bowlerEconomy);
+    bowlerEconomy.sort((a, b) => a[1] - b[1]);
+    bowlerEconomy = bowlerEconomy.slice(0, n);
+    bowlerEconomy = Object.fromEntries(bowlerEconomy); 
+    return bowlerEconomy
 
 }  
 export function topEconomicalBowlers(year,n){
     const matchIdArray=getId(matches,year);
+    const matchIdSet=new Set(matchIdArray)
     let bowlerEconomy={};
     let totalRun = deliveries.reduce((acc, deliver) => {  
         let run=Number(deliver.total_runs) 
-       if(matchIdArray.includes(deliver.match_id)){
+       if(matchIdSet.has(deliver.match_id)){
         if (!acc[deliver.bowler]) {
             acc[deliver.bowler] = { runs: 0, balls: 0 };
         }
@@ -29,10 +30,12 @@ export function topEconomicalBowlers(year,n){
         return acc; 
       }, {});    
    
-    bowlerEconomy=getTopBowlers(bowlerEconomy,n);
-    fs.writeFileSync('../public/output/topEconomicalBowlers.json', JSON.stringify(bowlerEconomy, null, 2), 'utf-8');
-      
-  
+    bowlerEconomy=getTopBowlers(bowlerEconomy,n); 
+    return bowlerEconomy
+   
 
 } 
-topEconomicalBowlers(2015,10);
+let bowlerEconomy=topEconomicalBowlers(2015,10);
+fs.writeFileSync('../public/output/topEconomicalBowlers.json', JSON.stringify(bowlerEconomy, null, 2), 'utf-8');
+      
+  

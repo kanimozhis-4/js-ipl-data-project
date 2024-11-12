@@ -14,11 +14,12 @@ export function teamWonTossAndMatch(){
         
         return acc; 
       },{});  
-      console.log(teams);
+      return teams;
      
-      fs.writeFileSync('../public/output/teamWonTossAndMatch.json', JSON.stringify(teams, null, 2), 'utf-8');
-      
-  
+     
 
 } 
-teamWonTossAndMatch();
+let teams=teamWonTossAndMatch();
+fs.writeFileSync('../public/output/teamWonTossAndMatch.json', JSON.stringify(teams, null, 2), 'utf-8');
+      
+  

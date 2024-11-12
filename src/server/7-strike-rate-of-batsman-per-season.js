@@ -34,13 +34,15 @@ export function strikeRateOfBatsmanPerSeason(){
 
         return playerStrikeRate;
        
-    },{ playerStrike: {}, runAndBall: {} })    
+    },{ playerStrike: {}, runAndBall: {} })   
+    return  strikeRateData.playerStrike; 
 
-    fs.writeFileSync('../public/output/strikeRateOfBatsmanPerSeason.json', JSON.stringify(strikeRateData.playerStrike, null, 2), 'utf-8'); 
+   
+}  
+let strikeRate=strikeRateOfBatsmanPerSeason();
+fs.writeFileSync('../public/output/strikeRateOfBatsmanPerSeason.json', JSON.stringify(strikeRate, null, 2), 'utf-8'); 
    
 
-}  
-strikeRateOfBatsmanPerSeason();
 
 
 
