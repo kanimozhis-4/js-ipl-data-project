@@ -1,43 +1,43 @@
 import fs from 'fs';
 import {matches} from "./1-matches-per-year.js";
 import { deliveries } from './1-matches-per-year.js'; 
-function getBowlerEconomy(totalRun){
+function getBowlerEconomy(totalRunAndBall){
     let minCount=10; 
     let bestBowler={}; 
-    let bowlerEconomy = Object.keys(totalRun).reduce((acc, bowler) => { 
-      if(totalRun[bowler].economy<minCount){
-          minCount=totalRun[bowler].economy; 
+    let bowlerEconomy = Object.keys(totalRunAndBall).reduce((acc, bowler) => { 
+      if(totalRunAndBall[bowler].economy<minCount){
+          minCount=totalRunAndBall[bowler].economy; 
           bestBowler={};
-          bestBowler[bowler]=totalRun[bowler].economy;
+          bestBowler[bowler]=totalRunAndBall[bowler].economy;
       }
-      acc[bowler] = totalRun[bowler].economy;  
+      acc[bowler] = totalRunAndBall[bowler].economy;  
       return acc;
        }, {}); 
     return bestBowler;
 }
-export function bestEconomyBowlerSuperOver(){  
-    let totalRun = deliveries.reduce((acc, deliver) => {  
+export function bestEconomyBowlerSuperOver(){   
+    let totalRunAndBall = deliveries.reduce((acc, deliver) => {  
         let run=Number(deliver.total_runs) 
-       if(deliver.is_super_over==1){
-        if (!acc[deliver.bowler]) {
-            acc[deliver.bowler] = { runs: 0, balls: 0 };
+        let bowler=deliver.bowler;
+        if(deliver.is_super_over==1){
+            if (bowler in acc) {  
+                acc[bowler].runs += run;
+                acc[bowler].balls += 1; 
+            }
+            else{
+                acc[bowler] = { 
+                    runs: run,
+                    balls: 1 };
+            }
+            acc[bowler].economy = acc[bowler].runs / (acc[bowler].balls / 6);  
         }
-
-        acc[deliver.bowler].runs += run;
-        acc[deliver.bowler].balls += 1;
-
-        acc[deliver.bowler].economy = acc[deliver.bowler].runs / (acc[deliver.bowler].balls / 6); 
-       }
         return acc; 
       }, {});   
      
-      let bestBowler=getBowlerEconomy(totalRun);
-     
-      return bestBowler;
-      
-  
-
+   
+      return totalRunAndBall
 } 
-let bestBowler=bestEconomyBowlerSuperOver();
+let totalRunAndBall=bestEconomyBowlerSuperOver();
+let bestBowler=getBowlerEconomy(totalRunAndBall);
 fs.writeFileSync('../public/output/bestEconomyBowlerSuperOver.json', JSON.stringify(bestBowler, null, 2), 'utf-8');
       

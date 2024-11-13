@@ -10,32 +10,38 @@ export function getTopBowlers(bowlerEconomy,n){
     return bowlerEconomy
 
 }  
-export function topEconomicalBowlers(year,n){
-    const matchIdArray=getId(matches,year);
-    const matchIdSet=new Set(matchIdArray)
+export function topEconomicalBowlers(matchIdSet){
+   
     let bowlerEconomy={};
     let totalRun = deliveries.reduce((acc, deliver) => {  
         let run=Number(deliver.total_runs) 
-       if(matchIdSet.has(deliver.match_id)){
-        if (!acc[deliver.bowler]) {
-            acc[deliver.bowler] = { runs: 0, balls: 0 };
+        let bowler=deliver.bowler;
+        let matchId=deliver.match_id;
+        if(matchIdSet.has(matchId)){  
+            if(bowler in acc){
+                acc[bowler].runs +=run;
+                acc[bowler].balls +=1;
+            } 
+            else{
+                acc[bowler] = { 
+                    runs: run, 
+                    balls: 1 
+                };
+            }  
+            let totalRuns=acc[bowler].runs
+            let totalBalls=acc[bowler].balls
+            acc[bowler].economy= totalRuns / ( totalBalls / 6);
+            bowlerEconomy[bowler]=acc[bowler].economy;
+
         }
-
-        acc[deliver.bowler].runs += run;
-        acc[deliver.bowler].balls += 1;
-
-        acc[deliver.bowler].economy = acc[deliver.bowler].runs / (acc[deliver.bowler].balls / 6); 
-        bowlerEconomy[deliver.bowler]=acc[deliver.bowler].economy;
-       }
         return acc; 
       }, {});    
-   
-    bowlerEconomy=getTopBowlers(bowlerEconomy,n); 
     return bowlerEconomy
-   
-
 } 
-let bowlerEconomy=topEconomicalBowlers(2015,10);
-fs.writeFileSync('../public/output/topEconomicalBowlers.json', JSON.stringify(bowlerEconomy, null, 2), 'utf-8');
+const matchIdArray=getId(2015);
+const matchIdSet=new Set(matchIdArray)
+let bowlerEconomy=topEconomicalBowlers(matchIdSet);
+let topBowler=getTopBowlers(bowlerEconomy,10); 
+fs.writeFileSync('../public/output/topEconomicalBowlers.json', JSON.stringify(topBowler, null, 2), 'utf-8');
       
   

@@ -16,8 +16,6 @@ export function matchesPerYear(){
       }, {});  
       return countByYear;
      
-  
-
 }  
 const countByYear= matchesPerYear();
 fs.writeFileSync('../public/output/matchesPerYear.json', JSON.stringify(countByYear, null, 2), 'utf-8');

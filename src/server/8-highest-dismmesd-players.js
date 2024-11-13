@@ -8,16 +8,18 @@ export function highestDismissedPlayer(){
         if (deliver.dismissal_kind!=="" && deliver.dismissal_kind !== "run out") {
             const batsman = deliver.batsman;
             const bowler = deliver.bowler;
-
-            if (!acc[batsman]) {
+            if (acc[batsman]) { 
+                if(acc[batsman][bowler]){
+                    acc[batsman][bowler] += 1; 
+                } 
+                else{
+                    acc[batsman][bowler] = 1;
+                }
+            } 
+            else{
                 acc[batsman] = {};
-            }
-            if (!acc[batsman][bowler]) { 
                 acc[batsman][bowler] = 1;
-            } else { 
-                acc[batsman][bowler] += 1; 
             }
-
             if (acc[batsman][bowler] > maxCount) {
                 maxCount = acc[batsman][bowler];
                 result = { batsman, bowler, dismissals: maxCount };
@@ -29,6 +31,6 @@ export function highestDismissedPlayer(){
    
 
 } 
-let result=highestDismissedPlayer();
-fs.writeFileSync('../public/output/highestDismissedPlayer.json', JSON.stringify(result, null, 2), 'utf-8'); 
+let dismissedResult=highestDismissedPlayer();
+fs.writeFileSync('../public/output/highestDismissedPlayer.json', JSON.stringify(dismissedResult, null, 2), 'utf-8'); 
 

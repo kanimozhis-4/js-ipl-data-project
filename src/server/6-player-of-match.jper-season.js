@@ -5,34 +5,30 @@ export function playerOfMatchPerSeason(){
     let topPlayers={}; 
     let playerOfMatchCount={};
     const playerOfMatch=matches.reduce((acc,match)=>{ 
-        if(match.season in acc){ 
-            if(match.player_of_match in acc[match.season]){  
-                acc[match.season][match.player_of_match]+=1; 
-                if(playerOfMatchCount[match.season]<acc[match.season][match.player_of_match]){
-                    playerOfMatchCount[match.season]=acc[match.season][match.player_of_match];
-                    topPlayers[match.season]=match.player_of_match;
+        let season=match.season; 
+        let player=match.player_of_match;
+        if(season in acc){ 
+            if(player in acc[season]){  
+                acc[season][player]+=1; 
+                if(playerOfMatchCount[season]<acc[season][player]){
+                    playerOfMatchCount[season]=acc[season][player];
+                    topPlayers[season]=player;
                 }
             } 
             else{  
-
-                acc[match.season][match.player_of_match]=1;
-                
+                acc[season][player]=1;
             }
         } 
         else{ 
-            let obj={};
-            obj[match.player_of_match]=1
-            acc[match.season]=obj; 
-            topPlayers[match.season]=match.player_of_match; 
-            playerOfMatchCount[match.season]=1;
+            acc[season]={};
+            acc[season][player]=1 
+            topPlayers[season]=player; 
+            playerOfMatchCount[season]=1;
         } 
         return acc
 
     },{})    
     return topPlayers;
-   
-  
-
 }  
 let topPlayers=playerOfMatchPerSeason();
 fs.writeFileSync('../public/output/playerOfMatchPerSeason.json', JSON.stringify(topPlayers, null, 2), 'utf-8');

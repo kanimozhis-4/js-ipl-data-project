@@ -1,46 +1,50 @@
 import fs from 'fs';
 import {matches} from"./1-matches-per-year.js";
 import { deliveries } from './1-matches-per-year.js';
-export function getSeason(id,matches){
-    let value=0;
-    const season=matches.reduce((acc,match)=>{ 
-        if(match.id===id){
-            return match.season;
-        } 
+export function getSeason(){ 
+    let seasonAndId=matches.reduce((acc,match)=>{ 
+        acc[match.id]=match.season;
         return acc;
-    },0) 
-    return season;
+    },{}) 
+    return seasonAndId;
 
 }
-export function strikeRateOfBatsmanPerSeason(){ 
-    
-    let strikeRateData=deliveries.reduce((playerStrikeRate,deliver)=>{  
-        const season=getSeason(deliver.match_id,matches);   
+export function strikeRateOfBatsmanPerSeason(seasonAndId){ 
+    let runAndBall={};
+    let strikeRateData=deliveries.reduce((playerStrike,deliver)=>{  
+        let batsman=deliver.batsman;
+        let run= Number(deliver.total_runs);
+        let id=deliver.match_id;
+        const season=seasonAndId[id];
        
-         if (!playerStrikeRate.playerStrike[season]) {
-            playerStrikeRate.playerStrike[season] = {};
-            playerStrikeRate.runAndBall[season] = {};
-        }
+        if(season in playerStrike){
+            if(batsman in runAndBall[season]){
+                runAndBall[season][batsman].runs +=run;
+                runAndBall[season][batsman].balls += 1;
+            } 
+            else{
+                runAndBall[season][batsman] = { runs: run, balls: 1 };
+            }
+        }  
+        else{
+            playerStrike[season] = {};
+            runAndBall[season] = {};
+            runAndBall[season][batsman] = { runs: run, balls: 1 };
+        } 
+        let totalRun=runAndBall[season][batsman].runs;
+        let totalBall=runAndBall[season][batsman].balls;
+        let strike=(totalRun/totalBall)*100;
+        playerStrike[season][batsman]=strike;
 
-        if (!playerStrikeRate.runAndBall[season][deliver.batsman]) {
-            playerStrikeRate.runAndBall[season][deliver.batsman] = { run: 0, balls: 0 };
-            playerStrikeRate.playerStrike[season][deliver.batsman]=0;
-        }
-
-        playerStrikeRate.runAndBall[season][deliver.batsman].run += Number(deliver.total_runs);
-        playerStrikeRate.runAndBall[season][deliver.batsman].balls += 1;
-        let strike=(playerStrikeRate.runAndBall[season][deliver.batsman].run/playerStrikeRate.runAndBall[season][deliver.batsman].balls)*100;
-        playerStrikeRate.playerStrike[season][deliver.batsman]=strike;
-
-        return playerStrikeRate;
+        return playerStrike;
        
-    },{ playerStrike: {}, runAndBall: {} })   
-    return  strikeRateData.playerStrike; 
-
+    },{} )   
+    return  strikeRateData; 
    
 }  
-let strikeRate=strikeRateOfBatsmanPerSeason();
-fs.writeFileSync('../public/output/strikeRateOfBatsmanPerSeason.json', JSON.stringify(strikeRate, null, 2), 'utf-8'); 
+let seasonAndId=getSeason();   
+let strikeRateData=strikeRateOfBatsmanPerSeason(seasonAndId);
+fs.writeFileSync('../public/output/strikeRateOfBatsmanPerSeason.json', JSON.stringify(strikeRateData, null, 2), 'utf-8'); 
    
 
 
